@@ -15,3 +15,6 @@ git push
 
 git add .
 
+git commit -m "git steps"
+
+git push
