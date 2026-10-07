@@ -1,12 +1,9 @@
 <?php include 'conex.php';
 
-// Check if table exists
 $tableName = "users";
-$stmt = $conn->query("SHOW TABLES LIKE '$tableName'");
-//
-if ($stmt->rowCount() == 0) {
+$stmt = $myDB->query("SHOW TABLES LIKE '$tableName'");
 
-    // sql to create table
+if ($stmt->rowCount() == 0) {
     $sql = "CREATE TABLE users (
       id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
       firstname VARCHAR(30) NOT NULL,
@@ -16,7 +13,7 @@ if ($stmt->rowCount() == 0) {
     )";
 
     try {
-        $conn->exec($sql);
+        $myDB->exec($sql);
         echo "Table users created successfully";
     } catch (PDOException $e) {
         echo $sql . "<br>" . $e->getMessage();
@@ -24,3 +21,5 @@ if ($stmt->rowCount() == 0) {
 } else {
     echo "Table users already exists";
 }
+
+$myDB = null;
