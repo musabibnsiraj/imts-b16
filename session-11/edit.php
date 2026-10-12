@@ -42,97 +42,110 @@ if ($user === false) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit User</title>
     <style>
+        :root { --primary: #2563eb; --text: #172033; --muted: #64748b; }
         * { box-sizing: border-box; }
         body {
             margin: 0;
             min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: var(--text);
+            background: linear-gradient(135deg, #eff6ff, #f8fafc);
+        }
+        .navbar {
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 24px;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #eff6ff, #f8fafc 55%, #eef2ff);
-            color: #1f2937;
+            justify-content: space-between;
+            padding: 20px 7%;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
         }
+        .brand { color: var(--primary); font-size: 21px; font-weight: 700; }
+        .nav-link { color: #475569; text-decoration: none; font-weight: 600; }
+        .container { width: min(100% - 32px, 560px); margin: 55px auto; }
         .card {
-            width: 100%;
-            max-width: 520px;
             padding: 36px;
             background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 18px;
-            box-shadow: 0 20px 45px rgba(15, 23, 42, .10);
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(15, 23, 42, .08);
         }
-        h1 { margin: 0 0 8px; font-size: 28px; color: #0f172a; }
-        .subtitle { margin: 0 0 24px; color: #64748b; }
+        h1 { margin: 0 0 8px; font-size: 30px; }
+        .subtitle { margin: 0 0 28px; color: var(--muted); }
         .success {
-            margin-bottom: 22px;
-            padding: 12px 14px;
-            border: 1px solid #bbf7d0;
+            margin-bottom: 20px;
+            padding: 13px 15px;
+            border: 0;
             border-radius: 8px;
-            background: #f0fdf4;
-            color: #166534;
-            font-size: 14px;
+            background: #ecfdf5;
+            color: #047857;
         }
-        .field { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 7px; font-weight: 600; }
+        .field { margin-bottom: 0; }
+        label { display: block; margin: 17px 0 7px; font-size: 14px; font-weight: 700; }
         input {
             width: 100%;
-            padding: 11px 12px;
+            padding: 13px 14px;
             border: 1px solid #cbd5e1;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 15px;
-            transition: border-color .2s, box-shadow .2s;
         }
-        input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, .15); }
-        .actions { display: flex; gap: 12px; margin-top: 26px; }
+        input:focus { outline: 3px solid #dbeafe; border-color: var(--primary); }
+        .actions { display: flex; gap: 12px; margin-top: 28px; }
         button, .cancel {
             flex: 1;
-            padding: 12px;
+            padding: 13px 16px;
             border: 0;
-            border-radius: 6px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
             text-align: center;
             text-decoration: none;
-            font-size: 15px;
             cursor: pointer;
         }
-        button { background: #2563eb; color: #fff; }
+        button { color: #fff; background: var(--primary); }
         button:hover { background: #1d4ed8; }
-        .cancel { background: #e2e8f0; color: #334155; }
+        .cancel { color: #475569; background: #f1f5f9; }
+        @media (max-width: 480px) { .card { padding: 24px; } .actions { flex-direction: column-reverse; } }
     </style>
 </head>
 <body>
-    <main class="card">
-        <h1>Edit User</h1>
-        <p class="subtitle">Update the user's information below.</p>
+    <nav class="navbar">
+        <div class="brand">User Management</div>
+        <a class="nav-link" href="index.php">Search Users</a>
+    </nav>
 
-        <?php if (!empty($successMessage)): ?>
-            <div class="success" role="status"><?= htmlspecialchars($successMessage, ENT_QUOTES, 'UTF-8') ?></div>
-        <?php endif; ?>
+    <main class="container">
+        <section class="card">
+            <h1>Edit User</h1>
+            <p class="subtitle">Update the user's information below.</p>
 
-        <form method="post">
-            <input type="hidden" name="id" value="<?= htmlspecialchars((string) $id, ENT_QUOTES, 'UTF-8') ?>">
+            <?php if (!empty($successMessage)): ?>
+                <div class="success" role="status"><?= htmlspecialchars($successMessage, ENT_QUOTES, 'UTF-8') ?></div>
+            <?php endif; ?>
 
-            <div class="field">
-                <label for="firstname">First Name</label>
-                <input type="text" id="firstname" name="firstname" value="<?= htmlspecialchars($user['firstname'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
-            </div>
+            <form method="post">
+                <input type="hidden" name="id" value="<?= htmlspecialchars((string) $id, ENT_QUOTES, 'UTF-8') ?>">
 
-            <div class="field">
-                <label for="lastname">Last Name</label>
-                <input type="text" id="lastname" name="lastname" value="<?= htmlspecialchars($user['lastname'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
-            </div>
+                <div class="field">
+                    <label for="firstname">First Name</label>
+                    <input type="text" id="firstname" name="firstname" value="<?= htmlspecialchars($user['firstname'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
+                </div>
 
-            <div class="field">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
-            </div>
+                <div class="field">
+                    <label for="lastname">Last Name</label>
+                    <input type="text" id="lastname" name="lastname" value="<?= htmlspecialchars($user['lastname'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
+                </div>
 
-            <div class="actions">
-                <a class="cancel" href="index.php">Cancel</a>
-                <button type="submit">Save Changes</button>
-            </div>
-        </form>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
+                </div>
+
+                <div class="actions">
+                    <a class="cancel" href="index.php">Cancel</a>
+                    <button type="submit">Save Changes</button>
+                </div>
+            </form>
+        </section>
     </main>
 </body>
 </html>
