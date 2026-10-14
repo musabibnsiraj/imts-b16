@@ -28,6 +28,9 @@
         .edit-link { padding: 7px 11px; border: 1px solid #c9d9f5; border-radius: 8px; background: #eef4ff; color: #285bb0; text-decoration: none; font-weight: 600; }
         .delete-button { padding: 7px 10px; background: #fff0f0; color: #c43d3d; }
         .empty { text-align: center; color: #68758a; padding: 32px 18px; }
+        .pagination { display: flex; justify-content: center; gap: 6px; padding: 18px; border-top: 1px solid #edf1f6; }
+        .pagination button { background: #f1f5fc; color: #356dcc; }
+        .pagination button.active, .pagination button:hover { background: #356dcc; color: #fff; }
         @media (max-width: 650px) {
             body { padding: 20px 10px; }
             .header, .toolbar { align-items: stretch; flex-direction: column; }
@@ -71,6 +74,8 @@
                     </tbody>
                 </table>
             </div>
+            <!-- Page buttons are added here by JavaScript -->
+            <div class="pagination" id="pagination"></div>
         </section>
     </main>
 
@@ -79,23 +84,31 @@
         const form = document.getElementById('searchForm');
         const input = document.getElementById('search');
         const rows = document.getElementById('userRows');
+        const pagination = document.getElementById('pagination');
         let searchTimer;
 
-        function loadUsers() {
-            // Send the search text to search.php.
-            const params = new URLSearchParams({ search: input.value });
+        function loadUsers(page = 1) {
+            // Send the search text and page number to search.php.
+            const params = new URLSearchParams({
+                search: input.value,
+                page: page
+            });
 
             fetch(`search.php?${params}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Search request failed');
                     }
-                    return response.text();
+                    return response.json();
                 })
-                // Put the HTML returned by search.php into the table.
-                .then(html => rows.innerHTML = html)
+                // Put the rows and page buttons into the page.
+                .then(result => {
+                    rows.innerHTML = result.rows;
+                    pagination.innerHTML = result.pagination;
+                })
                 .catch(() => {
                     rows.innerHTML = '<tr><td class="empty" colspan="6">Unable to load users.</td></tr>';
+                    pagination.innerHTML = '';
                 });
         }
 
@@ -108,7 +121,14 @@
         // Search while the user is typing.
         input.addEventListener('input', () => {
             clearTimeout(searchTimer);
-            searchTimer = setTimeout(loadUsers, 150);
+            searchTimer = setTimeout(() => loadUsers(1), 150);
+        });
+
+        // Load a different page when a page button is clicked.
+        pagination.addEventListener('click', event => {
+            if (event.target.tagName === 'BUTTON') {
+                loadUsers(event.target.dataset.page);
+            }
         });
 
         // Load all users when the page first opens.
