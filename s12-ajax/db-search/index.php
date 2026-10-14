@@ -1,18 +1,84 @@
 <?php
 include 'conex.php';
 
-// Use the connection created by conex.php and stop before calling methods on
-// a null value. The fallback also supports connection files using $conn.
 $db = $myDB ?? ($conn ?? null);
-if (!($myDB instanceof PDO)) {
+if (!$db instanceof PDO) {
     exit('Database connection is unavailable.');
 }
 
-// Read the optional search value from the query string.
-$search = trim($_GET['search'] ?? '');
+$search = trim((string) ($_GET['search'] ?? $_GET['q'] ?? ''));
 $page = filter_var($_GET['page'] ?? 1, FILTER_VALIDATE_INT);
 $page = ($page !== false && $page > 0) ? $page : 1;
 $perPage = 4;
+
+function e($value): string
+{
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
+
+function userRows(PDO $db, string $search, int $limit, int $offset): string
+{
+    $term = "%{$search}%";
+    $stmt = $db->prepare(
+        'SELECT id, firstname, lastname, email, reg_date
+         FROM users
+         WHERE firstname LIKE :first OR lastname LIKE :last OR email LIKE :email
+         ORDER BY id DESC LIMIT :limit OFFSET :offset'
+    );
+    $stmt->bindValue(':first', $term, PDO::PARAM_STR);
+    $stmt->bindValue(':last', $term, PDO::PARAM_STR);
+    $stmt->bindValue(':email', $term, PDO::PARAM_STR);
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $rows = '';
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $id = (int) $row['id'];
+        $rows .= '<tr>'
+            . '<td>' . $id . '</td>'
+            . '<td>' . e($row['firstname']) . '</td>'
+            . '<td>' . e($row['lastname']) . '</td>'
+            . '<td>' . e($row['email']) . '</td>'
+            . '<td>' . e($row['reg_date']) . '</td>'
+            . '<td><div class="actions">'
+            . '<a class="edit-link" href="edit.php?id=' . $id . '">✎ Edit</a>'
+            . '<form method="post" onsubmit="return confirm(\'Are you sure you want to delete this user?\');">'
+            . '<input type="hidden" name="delete_id" value="' . $id . '">'
+            . '<button class="delete-button" type="submit">Delete</button></form>'
+            . '</div></td></tr>';
+    }
+
+    return $rows ?: '<tr><td class="empty" colspan="6">No users found.</td></tr>';
+}
+
+if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest') {
+    try {
+        echo userRows($db, $search, $perPage, 0);
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo '<tr><td class="empty" colspan="6">Unable to search users.</td></tr>';
+    }
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
+    $deleteId = filter_var($_POST['delete_id'], FILTER_VALIDATE_INT);
+    if ($deleteId !== false && $deleteId > 0) {
+        $stmt = $db->prepare('DELETE FROM users WHERE id = :id');
+        $stmt->execute([':id' => $deleteId]);
+    }
+}
+
+$term = "%{$search}%";
+$countStmt = $db->prepare(
+    'SELECT COUNT(*) FROM users
+     WHERE firstname LIKE :first OR lastname LIKE :last OR email LIKE :email'
+);
+$countStmt->execute([':first' => $term, ':last' => $term, ':email' => $term]);
+$totalUsers = (int) $countStmt->fetchColumn();
+$totalPages = max(1, (int) ceil($totalUsers / $perPage));
+$page = min($page, $totalPages);
 
 echo "<style>
     :root { color-scheme: light; font-family: Inter, Arial, sans-serif; }
@@ -62,78 +128,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
 }
 
 echo "<div class='toolbar'><form class='search' method='get'>";
-echo "<input type='search' name='search' placeholder='Search users' value='" . htmlspecialchars($search, ENT_QUOTES, 'UTF-8') . "'>";
+echo "<input type='search' name='search' id='search' oninput='ajaxCall(this.value)' placeholder='Search users' value='" . e($search) . "'>";
 echo "<button type='submit'>Search</button>";
 echo "</form>";
 echo "</div>";
 
-echo "<div class='table-wrap'><table>";
-echo "<tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th>
-    <th>Registration Date</th>
-    <th>Action</th></tr>";
+echo "<div class='table-wrap'><table><thead><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Registration Date</th><th>Action</th></tr></thead><tbody id='txtHint'>";
 
 try {
-    // Count matching users so the pagination links can be generated.
-    $searchValue = "%$search%";
-    $countStmt = $myDB->prepare("SELECT COUNT(*) FROM users WHERE firstname LIKE :search OR lastname LIKE :search OR email LIKE :search");
-    $countStmt->execute(['search' => $searchValue]);
-    $totalUsers = (int) $countStmt->fetchColumn();
-    $totalPages = max(1, (int) ceil($totalUsers / $perPage));
-    $page = min($page, $totalPages);
-    $offset = ($page - 1) * $perPage;
-
-
-    // Prepared statements keep the search value separate from the SQL query.
-    $stmt = $myDB->prepare("SELECT * FROM users WHERE firstname LIKE :search OR lastname LIKE :search OR email LIKE :search ORDER BY id DESC LIMIT :limit OFFSET :offset");
-    $stmt->bindValue(':search', $searchValue, PDO::PARAM_STR);
-    $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
-    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-    $stmt->execute();
-    $result = $stmt->fetchAll();
-    if (empty($result)) {
-        echo "<tr><td class='empty' colspan='6'>No users found.</td></tr>";
-    } else {
-        foreach ($result as $row) {
-            echo "<tr>";
-            echo "<td>" . (int) $row['id'] . "</td>";
-            echo "<td>" . htmlspecialchars($row['firstname'], ENT_QUOTES, 'UTF-8') . "</td>";
-            echo "<td>" . htmlspecialchars($row['lastname'], ENT_QUOTES, 'UTF-8') . "</td>";
-            echo "<td>" . htmlspecialchars($row['email'], ENT_QUOTES, 'UTF-8') . "</td>";
-            echo "<td>" . htmlspecialchars($row['reg_date'], ENT_QUOTES, 'UTF-8') . "</td>";
-            echo "<td><div class='actions'>";
-            // Provide a link to edit this user.
-            echo "<a class='edit-link' href='edit.php?id=" . (int) $row['id'] . "'>✎ Edit</a>";
-
-            // Ask for confirmation before submitting the delete request.
-            echo "<form method='post' 
-        onsubmit=\"return confirm('Are you sure you want to delete this user?');\">";
-            echo "<input type='hidden' name='delete_id' value='" . (int) $row['id'] . "'>";
-            echo "<button class='delete-button' type='submit'>Delete</button>";
-            echo "</form>";
-
-            echo "</div></td>";
-            echo "</tr>";
-        }
-
-    }
+    echo userRows($db, $search, $perPage, ($page - 1) * $perPage);
 } catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
+    echo '<tr><td class="empty" colspan="6">Unable to load users.</td></tr>';
 }
-echo "</table></div>";
+echo "</tbody></table></div>";
 
 if ($totalPages > 1) {
     echo "<footer class='pagination' aria-label='Pagination'>";
-    for ($pageNumber = 1; $pageNumber <= $totalPages; $pageNumber++) {
-        $query = http_build_query(['search' => $search, 'page' => $pageNumber]);
-        if ($pageNumber === $page) {
-            echo " <strong aria-current='page'>" . $pageNumber . "</strong> ";
-        } else {
-            echo " <a href='?" . htmlspecialchars($query, ENT_QUOTES, 'UTF-8') . "'>" . $pageNumber . "</a> ";
-        }
+    for ($number = 1; $number <= $totalPages; $number++) {
+        $query = http_build_query(['search' => $search, 'page' => $number]);
+        echo $number === $page
+            ? '<strong aria-current="page">' . $number . '</strong>'
+            : '<a href="?' . e($query) . '">' . $number . '</a>';
     }
     echo "</footer>";
 }
 echo "</section></main>";
 
-// Release the active database connection when the page is complete.
-$myDB = null;
+?>
+
+<script>
+    let searchTimer;
+
+    function ajaxCall(value) {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+            fetch('search.php?search=' + encodeURIComponent(value), {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => document.getElementById('txtHint').innerHTML = html)
+                .catch(() => document.getElementById('txtHint').innerHTML = '<tr><td class="empty" colspan="6">Unable to search users.</td></tr>');
+        }, 150);
+    }
+</script>
