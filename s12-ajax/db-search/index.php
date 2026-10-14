@@ -45,7 +45,6 @@
                 <h1>User Directory</h1>
                 <p class="subtitle">Manage registered users and their account details.</p>
             </div>
-            <a class="button" href="create.php">+ Create User</a>
         </header>
 
         <section class="card">
@@ -53,7 +52,7 @@
                 <!-- JavaScript sends this value to search.php -->
                 <form class="search" id="searchForm">
                     <input type="search" name="search" id="search" placeholder="Search users">
-                    <button type="submit">Search</button>
+                    <!-- <button type="submit">Search</button> -->
                 </form>
             </div>
             <div class="table-wrap">
@@ -131,8 +130,8 @@
             }
         });
 
-        // Load all users when the page first opens.
-        loadUsers();
+        // // Load all users when the page first opens.
+        // loadUsers();
     </script>
 </body>
 </html>
