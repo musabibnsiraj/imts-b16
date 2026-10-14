@@ -130,8 +130,8 @@
             }
         });
 
-        // // Load all users when the page first opens.
-        // loadUsers();
+        // Load all users when the page first opens.
+        loadUsers();
     </script>
 </body>
 </html>

@@ -82,6 +82,7 @@ try {
     $totalPages = max(1, (int) ceil($totalUsers / $perPage));
     $page = min($page, $totalPages);
     $users = searchUsers($myDB, $search, $perPage, ($page - 1) * $perPage);
+    //
 } catch (PDOException $exception) {
     http_response_code(500);
     exit('Unable to search users.');
