@@ -1,5 +1,6 @@
 <?php
 
+// Connect to the database.
 require 'conex.php';
 
 if (!$myDB instanceof PDO) {
@@ -7,15 +8,17 @@ if (!$myDB instanceof PDO) {
     exit('Database connection is unavailable.');
 }
 
+// Escape database values before showing them in HTML.
 function escape(string $value): string
 {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
+// Find users whose name or email contains the search text.
 function searchUsers(PDO $db, string $search): array
 {
     $term = "%{$search}%";
-    $statement = $db->prepare(
+    $query = $db->prepare(
         'SELECT id, firstname, lastname, email, reg_date
          FROM users
          WHERE firstname LIKE :firstname
@@ -23,16 +26,17 @@ function searchUsers(PDO $db, string $search): array
             OR email LIKE :email
          ORDER BY id DESC'
     );
-    $statement->execute([
+    $query->execute([
         'firstname' => $term,
         'lastname' => $term,
         'email' => $term,
     ]);
 
-    return $statement->fetchAll(PDO::FETCH_ASSOC);
+    return $query->fetchAll(PDO::FETCH_ASSOC);
 }
 
 try {
+    // Delete the selected user when the Delete button is submitted.
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
         $id = filter_var($_POST['delete_id'], FILTER_VALIDATE_INT);
 
@@ -41,12 +45,13 @@ try {
             exit('Invalid user ID.');
         }
 
-        $statement = $myDB->prepare('DELETE FROM users WHERE id = :id');
-        $statement->execute(['id' => $id]);
+        $query = $myDB->prepare('DELETE FROM users WHERE id = :id');
+        $query->execute(['id' => $id]);
         header('Location: index.php');
         exit;
     }
-    
+
+    // Read the search text and get matching users.
     $search = trim((string) ($_GET['search'] ?? ''));
     $users = searchUsers($myDB, $search);
 } catch (PDOException $exception) {
@@ -59,6 +64,7 @@ if (!$users) {
     exit;
 }
 
+// Print one table row for every matching user.
 foreach ($users as $user) {
     $id = (int) $user['id'];
     echo '<tr>';

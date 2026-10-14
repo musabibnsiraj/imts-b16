@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>User Directory</title>
     <style>
+        /* Basic page design */
         :root { color-scheme: light; font-family: Inter, Arial, sans-serif; }
         * { box-sizing: border-box; }
         body { margin: 0; padding: 32px 16px; background: #f4f7fb; color: #172033; }
@@ -46,6 +47,7 @@
 
         <section class="card">
             <div class="toolbar">
+                <!-- JavaScript sends this value to search.php -->
                 <form class="search" id="searchForm">
                     <input type="search" name="search" id="search" placeholder="Search users">
                     <button type="submit">Search</button>
@@ -63,6 +65,7 @@
                             <th>Action</th>
                         </tr>
                     </thead>
+                    <!-- Search results are added here by JavaScript -->
                     <tbody id="userRows">
                         <tr><td class="empty" colspan="6">Loading users...</td></tr>
                     </tbody>
@@ -72,12 +75,14 @@
     </main>
 
     <script>
+        // Get the form, input box, and table body from the page.
         const form = document.getElementById('searchForm');
         const input = document.getElementById('search');
         const rows = document.getElementById('userRows');
         let searchTimer;
 
         function loadUsers() {
+            // Send the search text to search.php.
             const params = new URLSearchParams({ search: input.value });
 
             fetch(`search.php?${params}`)
@@ -87,22 +92,26 @@
                     }
                     return response.text();
                 })
+                // Put the HTML returned by search.php into the table.
                 .then(html => rows.innerHTML = html)
                 .catch(() => {
                     rows.innerHTML = '<tr><td class="empty" colspan="6">Unable to load users.</td></tr>';
                 });
         }
 
+        // Search when the user clicks the Search button.
         form.addEventListener('submit', event => {
             event.preventDefault();
             loadUsers();
         });
 
+        // Search while the user is typing.
         input.addEventListener('input', () => {
             clearTimeout(searchTimer);
             searchTimer = setTimeout(loadUsers, 150);
         });
 
+        // Load all users when the page first opens.
         loadUsers();
     </script>
 </body>
