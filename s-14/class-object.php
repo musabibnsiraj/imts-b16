@@ -41,6 +41,69 @@ class Fruit
     }
 }
 
+class Vegetable
+{
+    // Properties
+    public $name;
+    public $color;
+    public $taste;
+
+    public function __construct($name, $color, $taste = "Bitter")
+    {
+        $this->name = $name;
+        $this->color = $color;
+        $this->taste = $taste;
+    }
+
+    // methods
+    public function getVegetableInfo()
+    {
+        echo "{$this->name} | {$this->color} | {$this->taste}";
+    }
+
+}
+
+class  Animal
+{
+    // Properties
+    public $name;
+    public $species;
+    public $sound;
+
+    public function __construct($name, $species, $sound = "Roar")
+    {
+        $this->name = $name;
+        $this->species = $species;
+        $this->sound = $sound;
+    }
+    
+    public function __destruct()
+    {
+        echo "<h2>Animal Class</h2>";
+        echo "{$this->name} | {$this->species} | {$this->sound}";
+    }
+}
+
+$cat = new Animal('Cat', 'Feline', 'Meow');
+
+
+echo "<br>";
+echo "<h2>Vegetable Class</h2>";
+
+$carrot = new Vegetable('Carrot', 'Orange');
+$carrot->getVegetableInfo(); // Output: Carrot | Orange | Bitter
+
+
+$broccoli = new Vegetable('Broccoli', 'Green', 'Sour');
+$broccoli->getVegetableInfo(); // Output: Broccoli | Green | Sour
+
+echo "<br>";
+
+$spinach = new Vegetable('Spinach', 'Green');
+$spinach->getVegetableInfo(); // Output: Spinach | Green | Sweet
+
+echo "<br>";
+
 echo "<h2>Fruit Class</h2>";
 
 $apple = new Fruit();
@@ -77,4 +140,5 @@ if ($benz instanceof Car) {
     echo "<br>BenZ is an instance of Car class";
 }
 
+echo "<br><br><br> Here is the list of all classes in this file: <br><br><br>";
 
