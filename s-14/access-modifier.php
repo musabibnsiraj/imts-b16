@@ -67,3 +67,13 @@ $apple->setType("Apple");
 
 $apple->getType(); // Accessible
 
+class Fruit2 {
+  private $name;
+
+  public function get_details() {
+    echo "Name: " . $this->name . ".";
+  }
+}
+
+$apple = new Fruit2();
+// $apple->name = "Apple"; // Error: Cannot access private property
