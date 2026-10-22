@@ -71,12 +71,10 @@ echo "<h2>Instance of</h2>";
 
 if ($apple instanceof Fruit) {
     echo "<br>Apple is an instance of Fruit class";
-} else {
-    echo "<br>Apple is not an instance of Fruit class";
 }
 
 if ($benz instanceof Car) {
     echo "<br>BenZ is an instance of Car class";
-} else {
-    echo "<br>BenZ is not an instance of Car class";
 }
+
+
