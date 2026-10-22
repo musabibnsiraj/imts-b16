@@ -1,4 +1,5 @@
 <?php
+// Represents a car and stores its make, model, and year.
 class Car
 {
     // Properties
@@ -20,6 +21,7 @@ class Car
     }
 }
 
+// Represents a fruit and stores its name, color, and taste.
 class Fruit
 {
     // Properties
@@ -41,6 +43,7 @@ class Fruit
     }
 }
 
+// Represents a vegetable and initializes its name, color, and taste.
 class Vegetable
 {
     // Properties
@@ -63,6 +66,7 @@ class Vegetable
 
 }
 
+// Represents an animal and displays its details when destroyed.
 class  Animal
 {
     // Properties
@@ -142,3 +146,4 @@ if ($benz instanceof Car) {
 
 echo "<br><br><br> Here is the list of all classes in this file: <br><br><br>";
 
+//
