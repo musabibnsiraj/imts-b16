@@ -1,3 +1,9 @@
-<a href="views/customers/list.php">Customers</a><br/>
-<a href="views/items/list.php">Items</a><br/>
-<a href="views/sales/list.php">Sales</a><br/>
+<link rel="stylesheet" href="css/style.css">
+
+<div class="nav-wrapper">
+    <div class="nav-links">
+        <a href="views/customers/index.php">Customers</a>
+        <a href="views/items/index.php">Items</a>
+        <a href="views/sales/index.php">Sales</a>
+    </div>
+</div>

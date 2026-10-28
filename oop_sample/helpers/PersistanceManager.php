@@ -1,6 +1,6 @@
 <?php
 
-require_once '../../config.php';
+// require_once '../../config.php';
 
 class PersistanceManager {
 
@@ -8,7 +8,6 @@ class PersistanceManager {
 
     public function __construct() {
         try {
-            // echo "init connection<br/>";
             $this->pdo = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USERNAME, DB_PASSWORD);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
@@ -34,15 +33,18 @@ class PersistanceManager {
         try {
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($param);
+
             if ($getLastInsertedId) {
                 return $this->pdo->lastInsertId();
             }
+
             if ($fetchFirstRecOnly)
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
             else
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
             return $result;
+            
         } catch (PDOException $e) {
             echo $e->getMessage();
             return -1;
