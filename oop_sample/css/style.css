@@ -32,3 +32,34 @@
     .nav-links a:hover {
         background: #1f4fb8;
     }
+
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: #ffffff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        border: 1px solid #dfe3e8;
+        padding: 10px 14px;
+        text-align: left;
+    }
+
+    .styled-table th {
+        background: #2d6cdf;
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    .styled-table tr:nth-child(even) {
+        background: #f7f9fc;
+    }
+
+    .styled-table tr:hover {
+        background: #edf4ff;
+    }
