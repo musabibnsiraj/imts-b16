@@ -31,6 +31,7 @@ class PersistanceManager {
 
     private function executeQuery($query, $param = null, $fetchFirstRecOnly = false, $getLastInsertedId = false) {
         try {
+           
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($param);
 
@@ -42,7 +43,9 @@ class PersistanceManager {
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
             else
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             $stmt->closeCursor();
+
             return $result;
             
         } catch (PDOException $e) {
