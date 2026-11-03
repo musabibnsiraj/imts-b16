@@ -40,7 +40,11 @@ if (!empty($customers)) {
         foreach ($customerData as $value) {
             echo '<td>' . htmlspecialchars((string) $value) . '</td>';
         }
-        echo '<td><a href="edit.php?id=' . urlencode((string) $customerId) . '" class="btn">Edit</a></td>';
+        $encodedCustomerId = urlencode((string) $customerId);
+        echo '<td class="action-buttons">';
+        echo '<a href="edit.php?id=' . $encodedCustomerId . '" class="btn">Edit</a>';
+        echo '<a href="delete.php?id=' . $encodedCustomerId . '" class="btn btn-danger" onclick="return confirm(\'Are you sure you want to delete this customer?\');">Delete</a>';
+        echo '</td>';
         echo '</tr>';
     }
 

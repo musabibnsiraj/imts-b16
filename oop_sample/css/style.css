@@ -49,6 +49,22 @@
         background: #1f4fb8;
     }
 
+    .btn-danger {
+        background: #d64545;
+    }
+
+    .btn-danger:hover {
+        background: #ad2f2f;
+    }
+
+    .action-buttons {
+        white-space: nowrap;
+    }
+
+    .action-buttons .btn {
+        margin: 0 4px 0 0;
+    }
+
     .customer-form {
         max-width: 480px;
         margin: 24px auto 0;
