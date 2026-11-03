@@ -101,6 +101,22 @@
         box-shadow: 0 0 0 3px rgba(45, 108, 223, 0.15);
     }
 
+    .form-group select {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #b8c2cc;
+        border-radius: 6px;
+        background: #ffffff;
+        font: inherit;
+    }
+
+    .form-group select:focus {
+        outline: none;
+        border-color: #2d6cdf;
+        box-shadow: 0 0 0 3px rgba(45, 108, 223, 0.15);
+    }
+
     .styled-table {
         width: 100%;
         border-collapse: collapse;
