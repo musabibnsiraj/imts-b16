@@ -20,7 +20,7 @@ if (!empty($sales)) {
     echo '<table  class="styled-table">';
     echo '<thead><tr>';
     foreach (array_keys((array) $sales[0]) as $column) {
-        echo '<th>' . htmlspecialchars($column) . '</th>';
+        echo '<th>' . htmlspecialchars(ucwords(str_replace('_', ' ', $column))) . '</th>';
     }
     echo '</tr></thead><tbody>';
 

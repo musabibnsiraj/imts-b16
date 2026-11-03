@@ -13,6 +13,12 @@ class Sale extends BaseModel
         return "sales";
     }
 
+    public function getAll()
+    {
+        return $this->pm->run("SELECT id, sales_date, customer_id, total FROM " . $this->getTableName());
+    }
+
+
     public function addNewRec() {}
 
     public function updateRec() {}

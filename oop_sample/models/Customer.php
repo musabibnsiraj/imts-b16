@@ -3,10 +3,8 @@ include_once 'BaseModel.php';
 
 class Customer extends BaseModel
 {
-    public $firstname;
-    public $lastname;
-    public $email;
-    public $phone;
+    public $name;
+    public $mobile;
 
     public function getTableName()
     {
@@ -15,56 +13,21 @@ class Customer extends BaseModel
 
     public function getAll()
     {
+        // Retrieve all records from the database
         return $this->pm->run("SELECT id, name, mobile FROM " . $this->getTableName());
     }
 
-    public function addNewRec() {}
+    public function addNewRec()
+    {
+        // Add a new record to the database
+        $param = array(':name' => $this->name, ':mobile' => $this->mobile);
+        return $this->pm->run("INSERT INTO customers(name, mobile) values(:name, :mobile)", $param);
+    }
 
-    public function updateRec() {}
+    public function updateRec() {
+        // Update the record in the database
 
-
-    // public function __construct()
-    // {
-    //     parent::__construct();
-    // }
-
-    // public function getAllCustomers()
-    // {
-    //     return $this->pm->run("SELECT * FROM customers");
-    // }
-
-    // public function getCustomerById($id)
-    // {
-    //     $param = array(':id' => $id);
-    //     return $this->pm->run("SELECT * FROM customers WHERE id = :id", $param, true);
-    // }
-
-    // public function createCustomer($data)
-    // {
-    //     $param = array(
-    //         ':firstname' => $data['firstname'],
-    //         ':lastname' => $data['lastname'],
-    //         ':email' => $data['email'],
-    //         ':phone' => $data['phone']
-    //     );
-    //     return $this->pm->insertAndGetLastRowId("INSERT INTO customers(firstname, lastname, email, phone) VALUES(:firstname, :lastname, :email, :phone)", $param);
-    // }
-
-    // public function updateCustomer($id, $data)
-    // {
-    //     $param = array(
-    //         ':id' => $id,
-    //         ':firstname' => $data['firstname'],
-    //         ':lastname' => $data['lastname'],
-    //         ':email' => $data['email'],
-    //         ':phone' => $data['phone']
-    //     );
-    //     return $this->pm->run("UPDATE customers SET firstname = :firstname, lastname = :lastname, email = :email, phone = :phone WHERE id = :id", $param);
-    // }
-
-    // public function deleteCustomer($id)
-    // {
-    //     $param = array(':id' => $id);
-    //     return $this->pm->run("DELETE FROM customers WHERE id = :id", $param);
-    // }
+        $param = array(':id' => $this->id, ':name' => $this->name, ':mobile' => $this->mobile);
+        return $this->pm->run("UPDATE customers SET name = :name, mobile = :mobile WHERE id = :id", $param);
+    }
 }
