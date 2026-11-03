@@ -21,7 +21,8 @@ if (!empty($sales)) {
     echo '<table  class="styled-table">';
     echo '<thead><tr>';
     foreach (array_keys((array) $sales[0]) as $column) {
-        echo '<th>' . htmlspecialchars(ucwords(str_replace('_', ' ', $column))) . '</th>';
+        $heading = $column === 'customer_name' ? 'Customer' : ucwords(str_replace('_', ' ', $column));
+        echo '<th>' . htmlspecialchars($heading) . '</th>';
     }
     echo '<th>Actions</th>';
     echo '</tr></thead><tbody>';

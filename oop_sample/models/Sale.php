@@ -15,7 +15,11 @@ class Sale extends BaseModel
 
     public function getAll()
     {
-        return $this->pm->run("SELECT id, sales_date, customer_id, total FROM " . $this->getTableName());
+        return $this->pm->run(
+            "SELECT sales.id, sales.sales_date, customers.name AS customer_name, sales.total
+             FROM sales
+             INNER JOIN customers ON sales.customer_id = customers.id"
+        );
     }
 
 
