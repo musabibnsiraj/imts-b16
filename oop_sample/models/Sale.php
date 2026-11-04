@@ -55,4 +55,10 @@ class Sale extends BaseModel
         $param = array(':sale_id' => $id);
         return $this->pm->run("SELECT s.id, s.sales_date, s.total, c.name as customer_name FROM sales s, customers c where s.customer_id = c.id and s.id = :sale_id", $param, true);
     }
+
+    public function updateTotal()
+    {
+        $param = array(':sale_id' => $this->id, ':id' => $this->id);
+        $this->pm->run("UPDATE sales set total = (SELECT SUM(price * qty) FROM sales_items where sale_id = :sale_id) where id = :id", $param);
+    }
 }

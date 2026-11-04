@@ -12,7 +12,7 @@ $si->saleId = $_GET['sale_id'];
 $saleItems = $si->getAll();
 ?>
 
-<a href="frm_new_sales_item.php?sale_id=<?php echo $_GET['sale_id'] ?? '';?>">Add new sale items</a><br><br>
+<a href="create.php?sale_id=<?php echo $_GET['sale_id'] ?? '';?>">Add new sale items</a><br><br>
 
 <table border="1">
     <tr>
