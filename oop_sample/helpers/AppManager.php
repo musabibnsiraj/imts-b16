@@ -1,7 +1,8 @@
 <?php
 
-// require_once './../config.php';
-require_once 'PersistanceManager.php';
+require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/PersistanceManager.php';
+require_once __DIR__ . '/SessionManager.php';
 
 // application manager
 class AppManager {
@@ -13,7 +14,7 @@ class AppManager {
     // get persistance manager
     public static function getPM() {
         if (self::$pm === null) {
-            include_once 'PersistanceManager.php';
+            include_once __DIR__ . '/PersistanceManager.php';
             self::$pm = new PersistanceManager();
         }
         return self::$pm;
@@ -22,7 +23,7 @@ class AppManager {
     // get session manager
     public static function getSM() {
         if (self::$sm === null) {
-            include_once 'SessionManager.php';
+            include_once __DIR__ . '/SessionManager.php';
             self::$sm = new SessionManager();
         }
         return self::$sm;
@@ -35,14 +36,14 @@ class AppManager {
         {
             if($mode == "db")
             {
-                include_once 'DBLogManager.php';
-                include_once 'PersistanceManager.php';
+                include_once __DIR__ . '/DBLogManager.php';
+                include_once __DIR__ . '/PersistanceManager.php';
                 self::$pm = new PersistanceManager();
                 self::$lm = new DBLogManager(self::$pm);
             }
             else
             {
-                include_once 'FileLogManager.php';
+                include_once __DIR__ . '/FileLogManager.php';
                 self::$lm = new FileLogManager();
             }
         }
