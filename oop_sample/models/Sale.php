@@ -49,4 +49,10 @@ class Sale extends BaseModel
             $param
         );
     }
+
+    public function getDetailById($id)
+    {
+        $param = array(':sale_id' => $id);
+        return $this->pm->run("SELECT s.id, s.sales_date, s.total, c.name as customer_name FROM sales s, customers c where s.customer_id = c.id and s.id = :sale_id", $param, true);
+    }
 }

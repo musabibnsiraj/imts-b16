@@ -36,6 +36,7 @@ if (!empty($sales)) {
         }
         $encodedSaleId = urlencode((string) $saleId);
         echo '<td class="action-buttons">';
+        echo '<a href="../sale-items/index.php?sale_id=' . $encodedSaleId . '" class="btn">Detail</a>';
         echo '<a href="edit.php?id=' . $encodedSaleId . '" class="btn">Edit</a>';
         echo '<a href="delete.php?id=' . $encodedSaleId . '" class="btn btn-danger" onclick="return confirm(\'Are you sure you want to delete this sale?\');">Delete</a>';
         echo '</td>';
