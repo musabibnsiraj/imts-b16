@@ -57,7 +57,7 @@ $saleItems = $si->getAll();
             <td><?php echo htmlspecialchars((string) $saleItem['price']); ?></td>
             <td><?php echo htmlspecialchars((string) $saleItem['qty']); ?></td>
             <td class="action-buttons">
-                <a href="frm_edit_sales_item.php?id=<?php echo urlencode((string) $saleItem['id']); ?>&amp;sale_id=<?php echo urlencode((string) $saleId); ?>" class="btn">Edit</a>
+                <a href="edit.php?id=<?php echo urlencode((string) $saleItem['id']); ?>&amp;sale_id=<?php echo urlencode((string) $saleId); ?>" class="btn">Edit</a>
                 <a href="delete.php?id=<?php echo urlencode((string) $saleItem['id']); ?>&amp;sale_id=<?php echo urlencode((string) $saleId); ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this sale item?');">Delete</a>
             </td>
         </tr>
